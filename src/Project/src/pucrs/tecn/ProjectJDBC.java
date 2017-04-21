@@ -10,7 +10,7 @@ import org.apache.derby.jdbc.EmbeddedDataSource;
 
 /**
  *
- * @author Júlio
+ * @author Gustavo de Lima e Matheus Streb
  */
 public class ProjectJDBC {
 
@@ -39,7 +39,11 @@ public class ProjectJDBC {
         
         //Passo3: consultar dados
         //selectAllProducts();
+        countProducts();
         selectProduct(2);
+        renameProduct(2, "wheyzin");
+        selectProduct(2);
+        deleteProduct(2);
         countProducts();
     }
 
@@ -165,13 +169,24 @@ public class ProjectJDBC {
             //Consultar dados da tabela
             String sql3 = "update product set name = ? where id = ?";
             try (PreparedStatement comando = conexao.prepareStatement(sql3)) {
+            	comando.setString(1, newName);
+            	comando.setInt(2, id);
+            	comando.execute();
+            	System.out.println("\nProduct updated successfully");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private static void deleteProduct(int id){
+    	try (Connection conexao = getConexaoViaDriverManager()) {
+            //Consultar dados da tabela
+            String sql3 = "delete from product where id = ?";
+            try (PreparedStatement comando = conexao.prepareStatement(sql3)) {
             	comando.setInt(1, id);
-            	comando.setString(2, newName);
-                try (ResultSet resultados = comando.executeQuery()) {
-                    while (resultados.next()) {
-                        System.out.println("\nProduct updated successfully");
-                    }
-                }
+            	comando.execute();
+            	System.out.println("\nProduct deleted successfully");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
